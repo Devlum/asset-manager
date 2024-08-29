@@ -39,6 +39,10 @@ const DesignImageList: React.FC<DesigListProps> = ({images, design, remove}) => 
           return false;
     }
 
+    const generateRandomKey = () => {
+        return Math.random().toString(36).substring(7);
+    }
+
     const handleDelete = (order?: number) => {
         console.log(order);
         if(order !== undefined && design && design.id){
@@ -51,7 +55,7 @@ const DesignImageList: React.FC<DesigListProps> = ({images, design, remove}) => 
             {images.length !== 0 ? 
             (<List style={{ height: '100%', width: '100%', margin:'0', padding:'0' , overflowY: 'auto'}}>
             {images.map((image: Image) => (
-                <ListItem key={image.order} style={{ display: 'flex', justifyContent: 'space-between', height: '10em' }}>
+                <ListItem key={generateRandomKey()} style={{ display: 'flex', justifyContent: 'space-between', height: '10em' }}>
                 <Box style={{ display: 'flex', flexDirection:'row', alignItems: 'center' }}>
                     <ListItemIcon>
                         <LabelImportantIcon />

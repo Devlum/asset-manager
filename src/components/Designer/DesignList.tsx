@@ -64,7 +64,7 @@ const DesignList: React.FC<DesigListProps> = ({projects, name='', activeDelete, 
                   <LabelImportantIcon />
               </ListItemIcon>
               <Container style={{ display: 'flex', flexDirection:'row', alignItems: 'center', paddingLeft:0 }}>
-                <TypographyFlow style={{ fontWeight:'bold'}}>{project.titulo}</TypographyFlow> &nbsp;
+                <TypographyFlow style={{ fontWeight:'bold'}}>{project.name}</TypographyFlow> &nbsp;
                 <TypographyFlow>/</TypographyFlow> &nbsp;
                 <TypographyFlow>Sub-elem: {project.number_children}</TypographyFlow>
               </Container>

@@ -9,7 +9,7 @@ import { BasicFrame } from '../../common/Frame/BasicFrame';
 import ButtonValidateUI from '../../common/Button/ButtonValidateUI';
 import { useNotification } from '../../hooks/useNotification';
 import { useCreateAsset, useCreateBaseAsset } from '../../queries/useDesign';
-import { Design } from '../../interfaces/design/design.interface';
+import { Design, Price } from '../../interfaces/design/design.interface';
 import TextFieldUI from '../../common/TextField/TextFieldUI';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -30,6 +30,7 @@ interface DesignDialogProps {
     const [more_description, setMoreDescription] = useState('');
     const [url, setUrl] = useState('');
     const [url_type, setUrlType] = useState('');
+    const [price, setPrice] = useState(0);
 
     useEffect(() => {
         if (data || baseRespose) {
@@ -53,6 +54,7 @@ interface DesignDialogProps {
     setMoreDescription('');
     setUrl('');
     setUrlType('');
+    setPrice(0);
   }
 
   const handleTitulo = (titulo: string) => setTitulo(titulo);
@@ -60,16 +62,27 @@ interface DesignDialogProps {
   const handleMoreDescription = (more_description: string) => setMoreDescription(more_description);
   const handleUrl = (url: string) => setUrl(url);
   const handleUrlType = (url_type: string) => setUrlType(url_type);
+  const handlePrice = (price: number) => setPrice(price);
   
   const handleSave = () => {
     if(titulo.trim() === ''){
         getError('Titulo es requerido');
         return;
     }
+
+    const PriceConst = (price: number): Price => {
+        return {id_role: 1, price: price};
+    };
+
     const asset: Design = { 
-        titulo: titulo, 
-        description: description, 
-        more_description: more_description, 
+        name: titulo,
+        short_description: description, 
+        long_description: more_description,
+        prices: price === 0 ? [] : [PriceConst(price)],
+        role: [{id_role: 1}],
+        select: true,
+        available: true,
+        mandatory: false,
         url: url, 
         url_type: url_type 
     };
@@ -91,11 +104,12 @@ interface DesignDialogProps {
         </DialogTitle>
         <DialogContent style={{paddingBottom: '0.5em'}}>
             <BasicFrame isCentered={false} className="w-full items-start flex-col">
-                <TextFieldUI title="TITULO" defaultValue={data?.titulo} setObject={handleTitulo} distance='6.9em'/>
-                <TextFieldUI title="DESCRIPTION" multiline={true} defaultValue={data?.description} setObject={handleDescription} distance='5em'/>
-                <TextFieldUI title="MORE DESCRIPTION" multiline={true} defaultValue={data?.more_description} setObject={handleMoreDescription} distance='3em'/>
+                <TextFieldUI title="TITULO" defaultValue={data?.name} setObject={handleTitulo} distance='6.9em'/>
+                <TextFieldUI title="DESCRIPTION" multiline={true} defaultValue={data?.short_description} setObject={handleDescription} distance='5em'/>
+                <TextFieldUI title="MORE DESCRIPTION" multiline={true} defaultValue={data?.long_description} setObject={handleMoreDescription} distance='3em'/>
                 <TextFieldUI title="URL" defaultValue={data?.url} setObject={handleUrl} distance='7.9em'/>
                 <TextFieldUI title="URL TYPE" defaultValue={data?.url_type} setObject={handleUrlType} distance='6.2em'/>
+                <TextFieldUI title="PRICE" defaultValue={data?.prices} setObject={handlePrice} distance='7.3em' type='number'/>
             </BasicFrame>
         </DialogContent>
         <DialogActions>

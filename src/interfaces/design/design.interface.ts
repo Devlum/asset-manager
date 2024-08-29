@@ -1,9 +1,11 @@
 
 export interface DesignItem {
     id:               number;
-    titulo:           string;
-    description:      string;
-    more_description: string;
+    name:             string;
+    price:            number;
+    prices?:          Price[];
+    short_description:      string;
+    long_description: string;
     depth:            number;
     order:            number;
     url:              string;
@@ -14,7 +16,10 @@ export interface DesignItem {
     number_children:  number;
     father_name:      string;
     grandfather_id:   number;
+    available:         boolean;
     length:           number;
+    mandatory:         boolean;
+    select:            boolean;
 }
 
 export interface DesignRequest {
@@ -23,12 +28,27 @@ export interface DesignRequest {
 }
 
 export interface Design {
-    id?:               number;
-    titulo?:           string;
-    description?:      string;
-    more_description?: string;
-    url?:              string;
-    url_type?:         string;
+    id?:                number;
+    name?:              string;
+    short_description?: string;
+    long_description?:  string;
+    url?:               string;
+    url_type?:          string;
+    available?:         boolean;
+    role?:              Role[];
+    prices?:            Price[];
+    mandatory?:         boolean;
+    select?:            boolean;
+}
+
+
+export interface Price {
+    id_role: number;
+    price:   number;
+}
+
+export interface Role {
+    id_role: number;
 }
 
 export interface ImageRequest {

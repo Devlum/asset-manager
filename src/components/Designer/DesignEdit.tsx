@@ -6,7 +6,7 @@ import Progress from "../../common/Progress/Progress";
 import TextFieldUI from "../../common/TextField/TextFieldUI";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAssetInfoById, useDeleteAsset, useUpdateAsset } from "../../queries/useDesign";
-import { Design, DesignRequest } from "../../interfaces/design/design.interface";
+import { Design, DesignRequest, Price } from "../../interfaces/design/design.interface";
 import ButtonDisableUI from "../../common/Button/ButtonDisableUI";
 
 const DesignEdit: React.FC = () => {
@@ -30,27 +30,35 @@ const DesignEdit: React.FC = () => {
     const [more_description, setMoreDescription] = useState('');
     const [url, setUrl] = useState('');
     const [url_type, setUrlType] = useState('');
+    const [price, setPrice] = useState(0);
 
-    const titulo_data = titulo !== '' && data && titulo !== data?.titulo;
-    const description_data = description !== '' && data && description !== data?.description;
-    const more_description_data = more_description !== '' && data && more_description !== data?.more_description;
+    const titulo_data = titulo !== '' && data && titulo !== data?.name;
+    const description_data = description !== '' && data && description !== data?.short_description;
+    const more_description_data = more_description !== '' && data && more_description !== data?.long_description;
     const url_data = url !== '' && data && url !== data?.url;
     const url_type_data = url_type !== '' && data && url_type !== data?.url_type;
-    const check = () =>  !( titulo_data || description_data || more_description_data || url_data || url_type_data);
+    const price_data = price !== 0 && data && price !== data?.price;
+    const check = () =>  !( titulo_data || description_data || more_description_data || url_data || url_type_data || price_data);
+
+    const PriceConst = (price: number): Price => {
+        return {id_role: 1, price: price};
+    };
 
     const handleTitulo = (titulo: string) => setTitulo(titulo);
     const handleDescription = (description: string) => setDescription(description);
     const handleMoreDescription = (more_description: string) => setMoreDescription(more_description);
     const handleUrl = (url: string) => setUrl(url);
     const handleUrlType = (url_type: string) => setUrlType(url_type);
+    const handlePrice = (price: number) => setPrice(price);
 
     const handleSaveChanges = () => {
         const asset: Design = {};
-        if(titulo_data) asset.titulo = titulo;
-        if(description_data) asset.description = description;
-        if(more_description_data) asset.more_description = more_description;
+        if(titulo_data) asset.name = titulo;
+        if(description_data) asset.short_description = description;
+        if(more_description_data) asset.long_description = more_description;
         if(url_data) asset.url = url;
         if(url_type_data) asset.url_type = url_type;
+        if(price_data) asset.prices = price === 0 ? [] : [PriceConst(price)];
         const request: DesignRequest = { id: data!.id, design: asset};
         mutate(request);
     }
@@ -73,11 +81,12 @@ const DesignEdit: React.FC = () => {
                 </BasicFrame>
                 :
                 <BasicFrame isCentered={false} className="items-start flex-col">
-                    <TextFieldUI title="TITULO" defaultValue={data?.titulo} setObject={handleTitulo} distance='6.9em'/>
-                    <TextFieldUI title="DESCRIPTION" multiline={true} defaultValue={data?.description} setObject={handleDescription} distance='5em'/>
-                    <TextFieldUI title="MORE DESCRIPTION" multiline={true} defaultValue={data?.more_description} setObject={handleMoreDescription} distance='3em'/>
+                    <TextFieldUI title="TITULO" defaultValue={data?.name} setObject={handleTitulo} distance='6.9em'/>
+                    <TextFieldUI title="DESCRIPTION" multiline={true} defaultValue={data?.short_description} setObject={handleDescription} distance='5em'/>
+                    <TextFieldUI title="MORE DESCRIPTION" multiline={true} defaultValue={data?.long_description} setObject={handleMoreDescription} distance='3em'/>
                     <TextFieldUI title="URL" defaultValue={data?.url} setObject={handleUrl} distance='7.9em'/>
                     <TextFieldUI title="URL TYPE" defaultValue={data?.url_type} setObject={handleUrlType} distance='6.2em'/>
+                    <TextFieldUI title="PRICE" defaultValue={data?.price} setObject={handlePrice} distance='7.3em' type='number'/>
                     <BasicFrame isCentered={false} className="items-center justify-center mt-4">
                     {
                         !update ?
